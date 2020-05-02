@@ -15,7 +15,7 @@ public class Book implements Serializable {
 
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "author_id")
     private Author author;
 

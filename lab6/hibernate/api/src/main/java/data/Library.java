@@ -1,10 +1,8 @@
 package data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +13,15 @@ public class Library implements Serializable {
     @GeneratedValue
     private UUID id;
 
+    @ManyToOne
+    private Reader readerId;
+
+    @ManyToOne
+    private Book bookId;
+
+    private Date borrowDate;
+
+    private Date returnDate;
 
 
 

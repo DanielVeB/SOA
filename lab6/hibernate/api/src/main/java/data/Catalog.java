@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "Catalog")
 @Table(name = "catalog")
 public class Catalog implements Serializable {
 
@@ -12,7 +12,7 @@ public class Catalog implements Serializable {
     @GeneratedValue
     private UUID id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Book book;
 
     private int totalNumber;

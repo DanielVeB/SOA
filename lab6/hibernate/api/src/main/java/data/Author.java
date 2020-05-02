@@ -2,6 +2,7 @@ package data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class Author implements Serializable {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
     public void addBook(Book book) {
         books.add(book);
