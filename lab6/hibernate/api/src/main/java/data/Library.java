@@ -14,10 +14,10 @@ public class Library implements Serializable {
     private UUID id;
 
     @ManyToOne
-    private Reader readerId;
+    private Reader reader;
 
     @ManyToOne
-    private Book bookId;
+    private Book book;
 
     private Date borrowDate;
 

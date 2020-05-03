@@ -1,6 +1,5 @@
 package data;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
@@ -15,7 +14,7 @@ public class Book implements Serializable {
 
     private String title;
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "author_id")
     private Author author;
 
