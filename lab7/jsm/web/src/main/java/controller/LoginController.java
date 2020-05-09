@@ -1,10 +1,14 @@
 package controller;
 
+import exception.InvalidPasswordException;
+import exception.UserNotFoundException;
 import service.ILoginService;
 
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
 @ManagedBean(name = "login")
@@ -36,6 +40,16 @@ public class LoginController implements Serializable {
 
 
     public String loginUser() {
+        try {
+            loginService.loginUser(user,pwd);
+
+        }catch (InvalidPasswordException ex){
+            FacesContext.getCurrentInstance().addMessage("loginForm:login",
+                    new FacesMessage("Invalid password, Please try again"));
+        }catch (UserNotFoundException ex){
+            FacesContext.getCurrentInstance().addMessage("loginForm:login",
+                    new FacesMessage("User with this name not found"));
+        }
         return "";
     }
 

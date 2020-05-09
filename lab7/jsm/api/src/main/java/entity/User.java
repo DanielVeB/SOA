@@ -1,25 +1,22 @@
 package entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity(name = "User")
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue
     private UUID id;
 
+    @Column(unique = true)
     private String name;
 
     private String password;
-
-    private String email;
 
     public UUID getId() {
         return id;

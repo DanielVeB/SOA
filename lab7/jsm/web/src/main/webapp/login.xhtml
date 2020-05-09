@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
 >
 
@@ -12,7 +13,7 @@
 
 </h:head>
 <h:body>
-    <h:form>
+    <h:form id="loginForm">
         <h3>Login User</h3>
         <h:outputText value="Username"/>
         <h:inputText id="username" value="#{login.user}"/>
@@ -24,29 +25,35 @@
         <h:message for="password"/>
         <br/><br/>
 
-        <h:commandButton action="#{login.loginUser()}"
+        <h:commandButton id="login"
+                         action="#{login.loginUser()}"
                          value="Login"/>
+        <h:message for="login"/>
     </h:form>
 
-    <h:form>
+    <h:form id="registerForm">
         <h3>Register User</h3>
         <h:outputText value="Username"/>
-        <h:inputText id="r_username" value="#{register.user}"/>
+        <h:inputText id="r_username" value="#{register.user}" required="true"/>
         <h:message for="r_username"/>
         <br/><br/>
 
         <h:outputText value="Password"/>
-        <h:inputSecret id="r_password" value="#{register.pwd}"/>
+        <h:inputSecret id="r_password" value="#{register.pwd}" required="true">
+            <f:validator validatorId="password_validator"/>
+        </h:inputSecret>
         <h:message for="r_password"/>
         <br/><br/>
 
         <h:outputText value="Repeat password"/>
-        <h:inputSecret id="r_rpassword" value="#{register.rPwd}"/>
+        <h:inputSecret id="r_rpassword" value="#{register.rPwd}" required="true"/>
         <h:message for="r_rpassword"/>
         <br/><br/>
 
-        <h:commandButton action="#{register.registerUser()}"
+        <h:commandButton id="register" action="#{register.registerUser()}"
+                         binding="#{register.mybutton}"
                          value="Register user"/>
+        <h:message for="register"/>
     </h:form>
 
 </h:body>
