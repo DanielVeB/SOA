@@ -16,17 +16,17 @@
     <h:form id="loginForm">
         <h3>Login User</h3>
         <h:outputText value="Username"/>
-        <h:inputText id="username" value="#{login.user}"/>
+        <h:inputText id="username" value="#{loginController.user}"/>
         <h:message for="username"/>
         <br/><br/>
 
         <h:outputText value="Password"/>
-        <h:inputSecret id="password" value="#{login.pwd}"/>
+        <h:inputSecret id="password" value="#{loginController.pwd}"/>
         <h:message for="password"/>
         <br/><br/>
 
         <h:commandButton id="login"
-                         action="#{login.loginUser()}"
+                         action="#{loginController.loginUser()}"
                          value="Login"/>
         <h:message for="login"/>
     </h:form>
