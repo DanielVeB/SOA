@@ -1,0 +1,9 @@
+config/LoggerConfig.class
+exception/UserNotFoundException.class
+dto/ForumMessage.class
+entity/Forum.class
+service/IForumService.class
+exception/InvalidPasswordException.class
+service/IUserService.class
+entity/User.class
+service/ILoginService.class

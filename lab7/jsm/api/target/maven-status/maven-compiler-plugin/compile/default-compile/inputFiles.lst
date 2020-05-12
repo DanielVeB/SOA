@@ -1,0 +1,9 @@
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/service/ILoginService.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/dto/ForumMessage.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/config/LoggerConfig.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/exception/UserNotFoundException.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/entity/Forum.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/service/IForumService.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/entity/User.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/service/IUserService.java
+/home/daniel/Documents/AGH/SOA/lab7/jsm/api/src/main/java/exception/InvalidPasswordException.java
