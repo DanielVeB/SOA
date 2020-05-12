@@ -2,18 +2,19 @@ package controller;
 
 import entity.Forum;
 import entity.User;
-import org.hibernate.exception.ConstraintViolationException;
+import exception.ForumAlreadyExist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.IForumService;
-import service.ILoginService;
 import service.IUserService;
 import util.SessionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import java.util.List;
 
 @ManagedBean(name = "forumController")
@@ -55,8 +56,9 @@ public class ForumController {
         try {
             Forum forum = forumService.createForum(this.forumName, this.forumDescription);
             forums.add(forum);
-        } catch (ConstraintViolationException ex) {
-            logger.error(ex.getMessage());
+        } catch (ForumAlreadyExist ex) {
+            FacesContext.getCurrentInstance().addMessage("form:forum",
+                    new FacesMessage("Forum already exist"));
         }
     }
 
@@ -64,7 +66,7 @@ public class ForumController {
         return user.getSubscribedForums().stream().anyMatch(f -> forum.getTitle().equals(f.getTitle()));
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userService.getUsers();
     }
 
@@ -79,9 +81,9 @@ public class ForumController {
     }
 
     public void sendMessage() {
-        for(User user: selectedUsers){
+        for (User user : selectedUsers) {
             logger.info("Send message to user {}", user.getName());
-            forumService.sendMessage(user.getName(),"",message);
+            forumService.sendMessage(user.getName(), "", message);
         }
     }
 

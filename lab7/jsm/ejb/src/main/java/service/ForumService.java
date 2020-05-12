@@ -2,6 +2,7 @@ package service;
 
 import entity.Forum;
 import entity.User;
+import exception.ForumAlreadyExist;
 import jms.JMSPublisher;
 import jms.Subscriber;
 import repo.ForumRepository;
@@ -10,6 +11,8 @@ import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.RollbackException;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @Stateless
@@ -36,11 +39,15 @@ public class ForumService implements IForumService {
     }
 
     @Override
-    public Forum createForum(String name, String description) {
+    public Forum createForum(String name, String description) throws ForumAlreadyExist {
         Forum forum = new Forum();
         forum.setTitle(name);
         forum.setDescription(description);
-        return forumRepository.create(forum);
+        try {
+            return forumRepository.create(forum);
+        }catch (RollbackException ex){
+            throw new ForumAlreadyExist();
+        }
     }
 
     @Override

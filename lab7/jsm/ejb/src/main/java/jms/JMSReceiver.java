@@ -18,7 +18,7 @@ public class JMSReceiver implements MessageListener {
         MapMessage message = (MapMessage) m;
         try {
             String text = message.getString("message");
-            System.out.println("[MESSAGE]  " + userName + ":GET message" + text);
+            System.out.println("[MESSAGE]  " + userName + ", message: " + text);
         } catch (JMSException e) {
             e.printStackTrace();
         }

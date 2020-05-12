@@ -3,6 +3,7 @@ package service;
 
 import entity.Forum;
 import entity.User;
+import exception.ForumAlreadyExist;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface IForumService {
 
     void broadcastMessageOnForum(String forumName, String message);
 
-    Forum createForum(String name, String description);
+    Forum createForum(String name, String description) throws ForumAlreadyExist;
 
     List<Forum> getAllForums();
 

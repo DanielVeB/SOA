@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.jms.JMSException;
+import javax.transaction.RollbackException;
 
 @Stateless
 @Remote(ILoginService.class)
@@ -32,7 +33,11 @@ public class LoginService implements ILoginService {
         User user = new User();
         user.setName(name);
         user.setPassword(hashedPassword);
-        return loginRepository.create(user);
+        try {
+            return loginRepository.create(user);
+        } catch (RollbackException e) {
+            return null;
+        }
     }
 
     @Override

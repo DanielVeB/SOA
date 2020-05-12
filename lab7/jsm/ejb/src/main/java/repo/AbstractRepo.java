@@ -1,6 +1,6 @@
 package repo;
 
-import clojure.lang.Cons;
+import exception.ForumAlreadyExist;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -20,12 +20,12 @@ public abstract class AbstractRepo<T> {
 
     protected abstract Class<T> getType();
 
-    public T create(T entity) throws ConstraintViolationException {
+    public T create(T entity) throws RollbackException {
         try {
             transaction.begin();
             entityManager.persist(entity);
             transaction.commit();
-        }catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
+        } catch (NotSupportedException | SystemException | HeuristicMixedException | HeuristicRollbackException e) {
             System.out.println(e.getMessage());
         }
         return entity;
@@ -39,10 +39,9 @@ public abstract class AbstractRepo<T> {
         } catch (ConstraintViolationException ex) {
             System.out.println("VALIDATION ERROR");
             System.out.println(ex.getMessage());
-        } catch (RollbackException ex){
+        } catch (RollbackException ex) {
             System.out.println("ROLLBACK. Optimistic loop exception");
-        }
-        catch (NotSupportedException | SystemException | HeuristicMixedException | HeuristicRollbackException e) {
+        } catch (NotSupportedException | SystemException | HeuristicMixedException | HeuristicRollbackException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -61,7 +60,7 @@ public abstract class AbstractRepo<T> {
         return entityManager.createQuery("FROM " + getType().getName(), getType()).getResultList();
     }
 
-    public CriteriaBuilder getCriteriaBuilder(){
+    public CriteriaBuilder getCriteriaBuilder() {
         return entityManager.getCriteriaBuilder();
     }
 

@@ -21,8 +21,9 @@
         <h:outputText value="Forum description"/>
         <h:inputText id="description" value="#{forumController.forumDescription}"/>
 
-        <h:commandButton action="#{forumController.createNewForum()}"
+        <h:commandButton id="forum" action="#{forumController.createNewForum()}"
                          value="Create new forum"/>
+        <h:message for="forum"/>
         <br/><br/>
 
         <p:commandButton update=":form:dispUsers"
