@@ -31,6 +31,8 @@ public class ForumController {
 
     private User user;
 
+    private List<User> selectedUsers;
+
     @EJB
     private IForumService forumService;
 
@@ -62,6 +64,10 @@ public class ForumController {
         return user.getSubscribedForums().stream().anyMatch(f -> forum.getTitle().equals(f.getTitle()));
     }
 
+    public List<User> getUsers(){
+        return userService.getUsers();
+    }
+
     public void unsubscribe() {
 //        TODO Create unsubscribe method
     }
@@ -73,7 +79,10 @@ public class ForumController {
     }
 
     public void sendMessage() {
-        forumService.sendMessage("user", "s", "xdd dddd");
+        for(User user: selectedUsers){
+            logger.info("Send message to user {}", user.getName());
+            forumService.sendMessage(user.getName(),"",message);
+        }
     }
 
     public void broadcastMessage() {
@@ -118,5 +127,13 @@ public class ForumController {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<User> getSelectedUsers() {
+        return selectedUsers;
+    }
+
+    public void setSelectedUsers(List<User> selectedUsers) {
+        this.selectedUsers = selectedUsers;
     }
 }

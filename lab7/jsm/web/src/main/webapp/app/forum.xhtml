@@ -23,9 +23,14 @@
 
         <h:commandButton action="#{forumController.createNewForum()}"
                          value="Create new forum"/>
+        <br/><br/>
 
-        <h:commandButton action="#{forumController.sendMessage()}"
-                         value="Send message to user"/>
+        <p:commandButton update=":form:dispUsers"
+                         oncomplete="PF('usersDialog').show()"
+                         title="Send message to user">
+        </p:commandButton>
+
+        <br/><br/>
 
         <p:dataTable id="forums"
                      emptyMessage="Empty"
@@ -93,10 +98,38 @@
         <p:dialog id="broadcast" header="Broadcast message" widgetVar="broadcastDialog" modal="true" showEffect="fade"
                   hideEffect="fade" resizable="false">
             <p:outputPanel style="text-align:center;">
-                <h:outputText value="Forum subject"/>
+                <h:outputText value="Message"/>
                 <h:inputText id="message" value="#{forumController.message}"/>
                 <h:commandButton action="#{forumController.broadcastMessage()}"
                                  value="Broadcast message"/>
+
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog id="dispUsers" header="Users" widgetVar="usersDialog" modal="true" showEffect="fade"
+                  hideEffect="fade" resizable="false">
+            <p:outputPanel id="usersDetail" style="text-align:center;">
+
+                <p:dataTable id="checkboxUsers"
+                             var="user"
+                             value="#{forumController.getUsers()}"
+                             selection="#{forumController.selectedUsers}"
+                             rowKey="#{user.id}"
+                             style="margin-bottom:0">
+                    <f:facet name="header">
+                        Users
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{user.name}" />
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <h:outputText value="Message"/>
+                        <h:inputText value="#{forumController.message}"/>
+                        <p:commandButton action="#{forumController.sendMessage()}" value="Send message" />
+                    </f:facet>
+                </p:dataTable>
 
             </p:outputPanel>
         </p:dialog>
