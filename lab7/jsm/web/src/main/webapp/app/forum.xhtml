@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" http-equiv="X-UA-Conpatible"/>
+    <title>Forums </title>
+    <h:outputStylesheet name="css/style.css"/>
+
+</h:head>
+<h:body>
+    <h:form id="form">
+
+        <h:outputText value="Forum subject"/>
+        <h:inputText id="forumName" value="#{forumController.forumName}"/>
+
+        <h:outputText value="Forum description"/>
+        <h:inputText id="description" value="#{forumController.forumDescription}"/>
+
+        <h:commandButton action="#{forumController.createNewForum()}"
+                         value="Create new forum"/>
+
+        <h:commandButton action="#{forumController.sendMessage()}"
+                         value="Send message to user"/>
+
+        <p:dataTable id="forums"
+                     emptyMessage="Empty"
+                     value="#{forumController.forums}"
+                     widgetVar="forumsTable"
+                     sortMode="multiple"
+                     var="forum"
+                     rowKey="#{forum.id}">
+
+            <p:column headerText="Forum" sortBy="#{forum.title}">
+                <h:outputText value="#{forum.title}"/>
+            </p:column>
+
+            <p:column headerText="description">
+                <h:outputText value="#{forum.description}"/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">Action</f:facet>
+                <p:commandButton update=":form:forums"
+                                 rendered="#{!forumController.hasSubscribed(forum)}"
+                                 action="#{forumController.registerToForum()}"
+                                 title="Subscribe forum">
+                    <f:setPropertyActionListener value="#{forum}" target="#{forumController.selectedForum}"/>
+                </p:commandButton>
+                <p:commandButton update=":form"
+                                 rendered="#{forumController.hasSubscribed(forum)}"
+                                 action="#{forumController.unsubscribe()}"
+                                 title="Unsubcribe forum">
+                    <f:setPropertyActionListener value="#{forum}" target="#{forumController.selectedForum}"/>
+                </p:commandButton>
+                <p:commandButton update=":form:showSubs"
+                                 oncomplete="PF('subscribersDialog').show()"
+                                 title="Show subscribers">
+                    <f:setPropertyActionListener value="#{forum}" target="#{forumController.selectedForum}"/>
+                </p:commandButton>
+
+                <p:commandButton update=":form:broadcast"
+                                 oncomplete="PF('broadcastDialog').show()"
+                                 title="Broadcast message">
+                    <f:setPropertyActionListener value="#{forum}" target="#{forumController.selectedForum}"/>
+                </p:commandButton>
+
+            </p:column>
+
+        </p:dataTable>
+
+        <p:dialog id="showSubs" header="Subscribers" widgetVar="subscribersDialog" modal="true" showEffect="fade"
+                  hideEffect="fade" resizable="false">
+            <p:outputPanel id="booksDetail" style="text-align:center;">
+
+                <p:dataTable id="forum_users"
+                             rendered="#{not empty forumController.selectedForum}"
+                             value="#{forumController.selectedForum.subscribers}"
+                             var="user"
+                             rowKey="#{user.id}">
+
+                    <p:column headerText="Name" sortBy="#{user.name}">
+                        <h:outputText value="#{user.name}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog id="broadcast" header="Broadcast message" widgetVar="broadcastDialog" modal="true" showEffect="fade"
+                  hideEffect="fade" resizable="false">
+            <p:outputPanel style="text-align:center;">
+                <h:outputText value="Forum subject"/>
+                <h:inputText id="message" value="#{forumController.message}"/>
+                <h:commandButton action="#{forumController.broadcastMessage()}"
+                                 value="Broadcast message"/>
+
+            </p:outputPanel>
+        </p:dialog>
+
+    </h:form>
+
+</h:body>
+</html>
