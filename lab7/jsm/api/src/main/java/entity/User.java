@@ -3,6 +3,8 @@ package entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity(name = "User")
@@ -17,6 +19,9 @@ public class User implements Serializable {
     private String name;
 
     private String password;
+
+    @ManyToMany(mappedBy = "subscribers",fetch = FetchType.EAGER)
+    private Set<Forum> subscribedForums = new HashSet<>();
 
     public UUID getId() {
         return id;
@@ -41,4 +46,13 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public Set<Forum> getSubscribedForums() {
+        return subscribedForums;
+    }
+
+    public void setSubscribedForums(Set<Forum> subscribedForums) {
+        this.subscribedForums = subscribedForums;
+    }
+
 }
