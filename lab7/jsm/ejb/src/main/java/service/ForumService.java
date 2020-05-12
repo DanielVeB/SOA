@@ -12,7 +12,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.RollbackException;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @Stateless
@@ -45,7 +44,7 @@ public class ForumService implements IForumService {
         forum.setDescription(description);
         try {
             return forumRepository.create(forum);
-        }catch (RollbackException ex){
+        } catch (RollbackException ex) {
             throw new ForumAlreadyExist();
         }
     }

@@ -1,7 +1,5 @@
 package repo;
 
-import exception.ForumAlreadyExist;
-
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

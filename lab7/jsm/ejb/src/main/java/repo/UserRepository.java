@@ -25,6 +25,4 @@ public class UserRepository extends AbstractRepo<User> {
         query.select(root).where(cb.equal(root.get("name"),name));
         return entityManager.createQuery(query).getSingleResult();
     }
-
-
 }
