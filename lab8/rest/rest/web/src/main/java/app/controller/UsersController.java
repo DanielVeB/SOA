@@ -1,8 +1,10 @@
 package app.controller;
 
+import app.util.Avatar;
 import io.swagger.annotations.Api;
 import logic.dto.UserDto;
 import logic.service.UsersService;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -10,10 +12,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
+
 @Path("/users")
-@Produces({"application/json"})
 @Api(value = "/users", tags = {"user"})
 public class UsersController {
 
@@ -73,21 +77,29 @@ public class UsersController {
 //    =================================================================
 
 
-    @PUT
+    @POST
     @Path("/{userId}/avatar")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response updateUserAvatar(@PathParam("userId") String userId,
-                                     File avatar) {
-        usersService.updateUserAvatar(userId,avatar);
+                                     @MultipartForm Avatar avatar) {
+
+        usersService.updateUserAvatar(userId, avatar.getData());
         return Response.status(204).build();
     }
 
     @GET
     @Path("/{userId}/avatar")
-    @Produces(MediaType.MULTIPART_FORM_DATA)
-    public Response getUserAvatar(@PathParam("userId") String userId) {
-        File file = usersService.getUserAvatar(userId);
-        return Response.status(200).entity(file).build();
+    @Produces({"image/png", "image/jpg"})
+    public Response getUserAvatar(@PathParam("userId") String userId) throws IOException {
+        byte[] b_avatar = usersService.getUserAvatar(userId);
+        File avatar = new File("avatar.png");
+        FileOutputStream fos = new FileOutputStream(avatar);
+        fos.write(b_avatar);
+        fos.flush();
+        fos.close();
+        return Response.status(200).entity(avatar).header(
+                "Content-Disposition", "attachment; filename=\"avatar.png\""
+        ).build();
     }
 
     @DELETE

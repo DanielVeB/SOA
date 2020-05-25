@@ -9,6 +9,7 @@ import javax.ejb.TransactionManagementType;
 @Stateless
 @TransactionManagement(TransactionManagementType.BEAN)
 public class MovieRepo extends AbstractRepo<Movie> {
+
     @Override
     protected Class<Movie> getType() {
         return Movie.class;

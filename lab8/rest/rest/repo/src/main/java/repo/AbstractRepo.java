@@ -30,18 +30,17 @@ public abstract class AbstractRepo<T> {
         return entity;
     }
 
-    public void update(T entity) {
+    public T update(T entity) {
         try {
             transaction.begin();
-            entityManager.merge(entity);
+            T merged = entityManager.merge(entity);
             transaction.commit();
-        } catch (ConstraintViolationException ex) {
-            System.out.println("VALIDATION ERROR");
-            System.out.println(ex.getMessage());
+            return merged;
+        } catch (ConstraintViolationException | NotSupportedException | SystemException | HeuristicMixedException | HeuristicRollbackException ex) {
+            return null;
         } catch (RollbackException ex) {
             System.out.println("ROLLBACK. Optimistic loop exception");
-        } catch (NotSupportedException | SystemException | HeuristicMixedException | HeuristicRollbackException e) {
-            System.out.println(e.getMessage());
+            return null;
         }
     }
 
