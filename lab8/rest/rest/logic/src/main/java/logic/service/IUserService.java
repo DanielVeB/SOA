@@ -2,7 +2,6 @@ package logic.service;
 
 import logic.dto.UserDto;
 
-import java.io.File;
 import java.util.List;
 
 public interface IUserService {
@@ -17,9 +16,9 @@ public interface IUserService {
 
     List<UserDto> getUsers(int offset, int limit);
 
-    File getUserAvatar(String userId);
+    byte[] getUserAvatar(String userId);
 
-    void updateUserAvatar(String userId, File avatar);
+    void updateUserAvatar(String userId, byte[] avatar);
 
     void removeUserAvatar(String userId);
 

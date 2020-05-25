@@ -1,9 +1,8 @@
 package logic.service;
 
-import logic.config.exception.WebException;
 import logic.dto.UserDto;
 import logic.exception.InvalidIdException;
-import logic.exception.UserNotFoundException;
+import logic.exception.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -14,8 +13,6 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.transaction.RollbackException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +54,7 @@ public class UsersService implements IUserService {
             userRepo.deleteById(getUserId(userId));
         } catch (EJBException ex) {
             logger.error("User with id {} not found", userId);
-            throw new UserNotFoundException(userId);
+            throw new NotFoundException(userId);
         }
     }
 
@@ -75,36 +72,35 @@ public class UsersService implements IUserService {
 
 
     @Override
-    public File getUserAvatar(String userId) {
+    public byte[] getUserAvatar(String userId) {
         User user = userRepo.getById(getUserId(userId));
-        if(user!= null){
-            return null;
-        }else {
-            throw new UserNotFoundException(userId);
+        if (user != null) {
+            return user.getAvatar();
+        } else {
+            throw new NotFoundException(userId);
         }
     }
 
     @Override
-    public void updateUserAvatar(String userId, File avatar) {
+    public void updateUserAvatar(String userId, byte[] avatar) {
 
         User user = userRepo.getById(getUserId(userId));
-        if(user!= null){
-            byte[] av = parseImage(avatar);
-            user.setAvatar(av);
+        if (user != null) {
+            user.setAvatar(avatar);
             userRepo.update(user);
-        }else {
-            throw new UserNotFoundException(userId);
+        } else {
+            throw new NotFoundException(userId);
         }
     }
 
     @Override
     public void removeUserAvatar(String userId) {
         User user = userRepo.getById(getUserId(userId));
-        if(user!= null){
+        if (user != null) {
             user.setAvatar(null);
             userRepo.update(user);
-        }else {
-            throw new UserNotFoundException(userId);
+        } else {
+            throw new NotFoundException(userId);
         }
     }
 
@@ -118,15 +114,4 @@ public class UsersService implements IUserService {
         }
     }
 
-    private byte[] parseImage(File image){
-        byte[] bFile = new byte[(int) image.length()];
-        try {
-            FileInputStream fileInputStream = new FileInputStream(image);
-            fileInputStream.read(bFile);
-            fileInputStream.close();
-        }catch (Exception ex){
-            throw new WebException(500,"IMAGE_ERROR","");
-        }
-        return bFile;
-    }
 }
