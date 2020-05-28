@@ -1,6 +1,8 @@
 package logic.service;
 
+import logic.config.exception.WebException;
 import logic.dto.UserDto;
+import logic.dto.get.IdentifableUserDto;
 import logic.exception.InvalidIdException;
 import logic.exception.NotFoundException;
 import org.modelmapper.ModelMapper;
@@ -13,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.transaction.RollbackException;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
@@ -29,29 +32,32 @@ public class UsersService implements IUserService {
 
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public IdentifableUserDto createUser(UserDto userDto) {
         try {
             logger.info("Create user {}", userDto);
             User createdUser = userRepo.create(mapper.map(userDto, User.class));
-            return mapper.map(createdUser, UserDto.class);
+            return mapper.map(createdUser, IdentifableUserDto.class);
         } catch (RollbackException e) {
-            e.printStackTrace();
+            throw new WebException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "RollbackException", "");
         }
-        return null;
     }
 
     @Override
-    public UserDto getUser(String userId) {
+    public IdentifableUserDto getUser(String userId) {
         logger.info("Get user by id: {}", userId);
-        User user = userRepo.getById(getUserId(userId));
-        return mapper.map(user, UserDto.class);
-
+        UUID id = parseId(userId);
+        User user = userRepo.getById(id);
+        if (user != null) {
+            return mapper.map(user, IdentifableUserDto.class);
+        } else {
+            throw new NotFoundException(userId);
+        }
     }
 
     @Override
     public void removeUser(String userId) {
         try {
-            userRepo.deleteById(getUserId(userId));
+            userRepo.deleteById(parseId(userId));
         } catch (EJBException ex) {
             logger.error("User with id {} not found", userId);
             throw new NotFoundException(userId);
@@ -59,13 +65,13 @@ public class UsersService implements IUserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
+    public IdentifableUserDto updateUser(UserDto userDto) {
         return null;
     }
 
-    public List<UserDto> getUsers(int offset, int limit) {
+    public List<IdentifableUserDto> getUsers(int offset, int limit) {
         List<User> users = userRepo.getUsers(offset, limit);
-        Type listType = new TypeToken<List<UserDto>>() {
+        Type listType = new TypeToken<List<IdentifableUserDto>>() {
         }.getType();
         return mapper.map(users, listType);
     }
@@ -73,7 +79,7 @@ public class UsersService implements IUserService {
 
     @Override
     public byte[] getUserAvatar(String userId) {
-        User user = userRepo.getById(getUserId(userId));
+        User user = userRepo.getById(parseId(userId));
         if (user != null) {
             return user.getAvatar();
         } else {
@@ -84,7 +90,7 @@ public class UsersService implements IUserService {
     @Override
     public void updateUserAvatar(String userId, byte[] avatar) {
 
-        User user = userRepo.getById(getUserId(userId));
+        User user = userRepo.getById(parseId(userId));
         if (user != null) {
             user.setAvatar(avatar);
             userRepo.update(user);
@@ -95,7 +101,7 @@ public class UsersService implements IUserService {
 
     @Override
     public void removeUserAvatar(String userId) {
-        User user = userRepo.getById(getUserId(userId));
+        User user = userRepo.getById(parseId(userId));
         if (user != null) {
             user.setAvatar(null);
             userRepo.update(user);
@@ -104,13 +110,11 @@ public class UsersService implements IUserService {
         }
     }
 
-
-    private UUID getUserId(String userId) {
+    private UUID parseId(String id) {
         try {
-            return UUID.fromString(userId);
+            return UUID.fromString(id);
         } catch (IllegalArgumentException ex) {
-            logger.error("Invalid id {} provided", userId);
-            throw new InvalidIdException(userId);
+            throw new InvalidIdException(id);
         }
     }
 

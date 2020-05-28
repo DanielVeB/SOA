@@ -1,16 +1,25 @@
 package logic.service;
 
 import logic.dto.MovieDto;
+import logic.dto.get.IdentifableMovieDto;
+
+import java.util.List;
 
 public interface IMovieService {
 
-    MovieDto getMovieByTitle(String title);
+    IdentifableMovieDto getMovieByTitle(String title);
 
-    MovieDto createMovie(MovieDto movieDto);
+    IdentifableMovieDto getMovieById(String id);
 
-    MovieDto deleteMovie(String movieId);
+    List<IdentifableMovieDto> getMovies(int offset, int limit);
 
-    MovieDto updateMovie(String movieId, MovieDto updatedMovie);
+    List<String> getMoviesUriLinks(int offset, int limit);
+
+    IdentifableMovieDto createMovie(MovieDto movieDto);
+
+    IdentifableMovieDto deleteMovie(String movieId);
+
+    void updateMovie(String movieId, MovieDto updatedMovie);
 
 
 }

@@ -2,6 +2,7 @@ package repo;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import repo.entity.Movie;
 import repo.entity.User;
 
 import javax.ejb.Stateless;
@@ -29,9 +30,8 @@ public class UserRepo extends AbstractRepo<User> {
         return query.list();
     }
 
-    public void updateUserAvatar(UUID userId, byte[] file){
-        User user = getById(userId);
-        user.setAvatar(file);
-        update(user);
+    public List<Movie> getUserMovies(UUID userID){
+        return getById(userID).getMovies();
     }
+
 }

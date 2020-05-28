@@ -19,10 +19,11 @@ public class User {
     private byte[] avatar;
 
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinTable(name = "movies",
+    @JoinTable(name = "user_movies",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id")
-    )    private List<Movie> movies;
+    )
+    private List<Movie> movies;
 
     public void addMovie(Movie movie){
         movies.add(movie);

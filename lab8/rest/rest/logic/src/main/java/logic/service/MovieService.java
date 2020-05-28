@@ -1,16 +1,21 @@
 package logic.service;
 
+import logic.config.exception.WebException;
 import logic.dto.MovieDto;
-import logic.exception.InvalidIdException;
+import logic.dto.get.IdentifableMovieDto;
 import logic.exception.NotFoundException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import repo.MovieRepo;
 import repo.entity.Movie;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
-import java.util.UUID;
+import javax.transaction.RollbackException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MovieService implements IMovieService {
 
@@ -26,41 +31,55 @@ public class MovieService implements IMovieService {
 
 
     @Override
-    public MovieDto getMovieByTitle(String title) {
-        return null;
-    }
-
-    @Override
-    public MovieDto createMovie(MovieDto movieDto) {
-        return null;
-    }
-
-    @Override
-    public MovieDto deleteMovie(String movieId) {
-        return null;
-    }
-
-    @Override
-    public MovieDto updateMovie(String movieId, MovieDto updatedMovie) {
-
-        UUID movieUUID = getMovieId(movieId);
-        Movie movie = movieRepo.getById(movieUUID);
+    public IdentifableMovieDto getMovieByTitle(String title) {
+        Movie movie = movieRepo.getMovieByTitle(title);
         if (movie != null) {
-            movie.setTitle(updatedMovie.getTitle());
-            movie.setUrl(updatedMovie.getUrl());
-            Movie updated = movieRepo.update(movie);
-            return mapper.map(updated, MovieDto.class);
+            return mapper.map(movie, IdentifableMovieDto.class);
         } else {
-            throw new NotFoundException(movieId);
+            throw new NotFoundException(title);
         }
     }
 
-    private UUID getMovieId(String movieId) {
+    @Override
+    public IdentifableMovieDto getMovieById(String id) {
+//        Movie = movieRepo.getById()
+        return null;
+    }
+
+    @Override
+    public List<IdentifableMovieDto> getMovies(int offset, int limit) {
+        List<Movie> movies = movieRepo.getMovies(offset, limit);
+        Type listType = new TypeToken<List<IdentifableMovieDto>>() {
+        }.getType();
+        return mapper.map(movies, listType);
+    }
+
+    @Override
+    public List<String> getMoviesUriLinks(int offset, int limit) {
+        List<Movie> movies = movieRepo.getMovies(offset, limit);
+        return movies.stream().map(
+                Movie::getUrl
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public IdentifableMovieDto createMovie(MovieDto movieDto) {
+        Movie movie = mapper.map(movieDto,Movie.class);
         try {
-            return UUID.fromString(movieId);
-        } catch (IllegalArgumentException ex) {
-            logger.error("Invalid id {} provided", movieId);
-            throw new InvalidIdException(movieId);
+            Movie createdMove = movieRepo.create(movie);
+            return mapper.map(createdMove, IdentifableMovieDto.class);
+        } catch (RollbackException e) {
+            throw new WebException(500,"","");
         }
+    }
+
+    @Override
+    public IdentifableMovieDto deleteMovie(String movieId) {
+        return null;
+    }
+
+    @Override
+    public void updateMovie(String movieId, MovieDto updatedMovie) {
+
     }
 }

@@ -1,9 +1,6 @@
 package repo.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity(name = "Movie")
@@ -11,7 +8,8 @@ import java.util.UUID;
 public class Movie {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "movie_id")
     private UUID id;
 
     private String title;

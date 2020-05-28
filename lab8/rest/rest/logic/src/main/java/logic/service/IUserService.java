@@ -1,20 +1,21 @@
 package logic.service;
 
 import logic.dto.UserDto;
+import logic.dto.get.IdentifableUserDto;
 
 import java.util.List;
 
 public interface IUserService {
 
-    UserDto createUser(UserDto userDto);
+    IdentifableUserDto createUser(UserDto userDto);
 
-    UserDto getUser(String userId);
+    IdentifableUserDto getUser(String userId);
 
     void removeUser(String userId);
 
-    UserDto updateUser(UserDto userDto);
+    IdentifableUserDto updateUser(UserDto userDto);
 
-    List<UserDto> getUsers(int offset, int limit);
+    List<IdentifableUserDto> getUsers(int offset, int limit);
 
     byte[] getUserAvatar(String userId);
 
