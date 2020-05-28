@@ -3,6 +3,7 @@ package app.controller.api;
 import app.util.Avatar;
 import app.util.PATCH;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import logic.dto.UserDto;
@@ -52,7 +53,8 @@ public interface IUserApi {
 
             }
     )
-    Response getUserById(@PathParam("userId") String userId);
+    Response getUserById(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                         @PathParam("userId") String userId);
 
     @PUT
     @Path("/{userId}")
@@ -66,7 +68,8 @@ public interface IUserApi {
 
             }
     )
-    Response updateUser(@PathParam("userId") String userId, UserDto userDto);
+    Response updateUser(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                        @PathParam("userId") String userId, UserDto userDto);
 
     @PATCH
     @Path("/{userId}")
@@ -80,7 +83,8 @@ public interface IUserApi {
 
             }
     )
-    Response patchUser(@PathParam("userId") String userId, Map<String, String> updates);
+    Response patchUser(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                       @PathParam("userId") String userId, Map<String, String> updates);
 
     @DELETE
     @Path("/{userId}")
@@ -93,22 +97,26 @@ public interface IUserApi {
 
             }
     )
-    Response removeUser(@PathParam("userId") String userId);
+    Response removeUser(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                        @PathParam("userId") String userId);
 
     @PUT
     @Path("/{userId}/avatar")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({"application/json"})
-    Response updateUserAvatar(@PathParam("userId") String userId,
+    Response updateUserAvatar(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                              @PathParam("userId") String userId,
                               @MultipartForm Avatar avatar);
 
     @GET
     @Path("/{userId}/avatar")
     @Produces({"application/json", "image/png"})
-    Response getUserAvatar(@PathParam("userId") String userId) throws IOException;
+    Response getUserAvatar(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                           @PathParam("userId") String userId) throws IOException;
 
     @DELETE
     @Path("/{userId}/avatar")
     @Produces({"application/json"})
-    Response removeUserAvatar(@PathParam("userId") String userId);
+    Response removeUserAvatar(@ApiParam(value = "user id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                              @PathParam("userId") String userId);
 }

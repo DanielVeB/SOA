@@ -1,6 +1,7 @@
 package app.controller.api;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import logic.dto.MovieDto;
 
 import javax.ws.rs.*;
@@ -29,7 +30,8 @@ public interface IMovieApi {
     @GET()
     @Path("/{id}")
     @Produces({"application/json"})
-    Response getMovieById(@PathParam("id") String id);
+    Response getMovieById(@ApiParam(value = "movie id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                          @PathParam("id") String id);
 
     @POST
     @Consumes({"application/json"})
@@ -38,9 +40,11 @@ public interface IMovieApi {
 
     @PUT
     @Path("/{id}")
-    Response updateMovie(@PathParam("id") String id, MovieDto movieDto);
+    Response updateMovie(@ApiParam(value = "movie id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                         @PathParam("id") String id, MovieDto movieDto);
 
     @DELETE
     @Path("/{id}")
-    Response deleteMovie(@PathParam("id") String id);
+    Response deleteMovie(@ApiParam(value = "movie id", example = "4d59f17f-2df3-4cd0-9f95-b01d51d98ce5", required = true)
+                         @PathParam("id") String id);
 }
