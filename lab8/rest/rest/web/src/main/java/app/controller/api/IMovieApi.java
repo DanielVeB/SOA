@@ -14,18 +14,15 @@ public interface IMovieApi {
 
     @GET
     @Produces({"application/json"})
-    Response getMovies(@DefaultValue("0") @QueryParam("offset") int offset,
+    Response getMovies(@ApiParam(value = "title", example = "title") @QueryParam("title") String title,
+                       @DefaultValue("0") @QueryParam("offset") int offset,
                        @DefaultValue("10") @QueryParam("limit") int limit);
 
     @GET
     @Produces({MediaType.TEXT_PLAIN})
-    Response getMoviesAsUriList(@DefaultValue("0") @QueryParam("offset") int offset,
+    Response getMoviesAsUriList(@ApiParam(value = "title", example = "title") @QueryParam("title") String title,
+                                @DefaultValue("0") @QueryParam("offset") int offset,
                                 @DefaultValue("10") @QueryParam("limit") int limit);
-
-    @GET()
-    @Path("/filter")
-    @Produces({"application/json"})
-    Response getMovieByTitle(@DefaultValue("") @QueryParam("title") String title);
 
     @GET()
     @Path("/{id}")

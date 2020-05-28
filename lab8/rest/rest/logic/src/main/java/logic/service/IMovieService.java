@@ -7,13 +7,12 @@ import java.util.List;
 
 public interface IMovieService {
 
-    IdentifableMovieDto getMovieByTitle(String title);
 
     IdentifableMovieDto getMovieById(String id);
 
-    List<IdentifableMovieDto> getMovies(int offset, int limit);
+    List<IdentifableMovieDto> getMovies(int offset, int limit, String title);
 
-    List<String> getMoviesUriLinks(int offset, int limit);
+    List<String> getMoviesUriLinks(int offset, int limit, String title);
 
     IdentifableMovieDto createMovie(MovieDto movieDto);
 

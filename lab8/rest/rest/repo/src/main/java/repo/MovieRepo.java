@@ -20,9 +20,16 @@ public class MovieRepo extends AbstractRepo<Movie> {
     }
 
     @Transactional
-    public List<Movie> getMovies(int offset, int limit) {
+    public List<Movie> getMovies(int offset, int limit,String title) {
         Session session = (Session) entityManager.getDelegate();
-        Query<Movie> query = session.createQuery("From Movie ");
+        String hql = "FROM Movie";
+
+        if(title != null){
+            hql += "WHERE title = :title";
+        }
+        Query<Movie> query = session
+                .createQuery(hql)
+                .setParameter("title", title);
         query.setFirstResult(offset);
         query.setMaxResults(limit);
         return query.list();

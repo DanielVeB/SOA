@@ -21,24 +21,17 @@ public class MovieController implements IMovieApi {
 
 
     @Override
-    public Response getMovies(int offset, int limit) {
+    public Response getMovies(String title, int offset, int limit) {
         logger.info("Get movies");
-        List<IdentifableMovieDto> movies = movieService.getMovies(offset, limit);
+        List<IdentifableMovieDto> movies = movieService.getMovies(offset, limit,title);
         return Response.ok().entity(movies).build();
     }
 
     @Override
-    public Response getMoviesAsUriList(int offset, int limit) {
+    public Response getMoviesAsUriList(String title, int offset, int limit) {
         logger.info("Get movies as uri list");
-        List<String> uriLinks = movieService.getMoviesUriLinks(offset, limit);
+        List<String> uriLinks = movieService.getMoviesUriLinks(offset, limit,title);
         return Response.ok().entity(uriLinks).build();
-    }
-
-    @Override
-    public Response getMovieByTitle(String title) {
-        logger.info("Get users");
-        IdentifableMovieDto movieDto = movieService.getMovieByTitle(title);
-        return Response.ok().entity(movieDto).build();
     }
 
     @Override

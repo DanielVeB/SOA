@@ -3,6 +3,7 @@ package logic.service;
 import logic.config.exception.WebException;
 import logic.dto.MovieDto;
 import logic.dto.get.IdentifableMovieDto;
+import logic.exception.InvalidIdException;
 import logic.exception.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import javax.transaction.RollbackException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MovieService implements IMovieService {
@@ -29,34 +31,25 @@ public class MovieService implements IMovieService {
     @Inject
     private Logger logger;
 
-
-    @Override
-    public IdentifableMovieDto getMovieByTitle(String title) {
-        Movie movie = movieRepo.getMovieByTitle(title);
-        if (movie != null) {
-            return mapper.map(movie, IdentifableMovieDto.class);
-        } else {
-            throw new NotFoundException(title);
-        }
-    }
-
     @Override
     public IdentifableMovieDto getMovieById(String id) {
-//        Movie = movieRepo.getById()
-        return null;
+        Movie movie = getMovie(parseId(id));
+        return mapper.map(movie,IdentifableMovieDto.class);
     }
 
     @Override
-    public List<IdentifableMovieDto> getMovies(int offset, int limit) {
-        List<Movie> movies = movieRepo.getMovies(offset, limit);
+    public List<IdentifableMovieDto> getMovies(int offset, int limit, String title) {
+        logger.info("get movies");
+        List<Movie> movies = movieRepo.getMovies(offset, limit, title);
         Type listType = new TypeToken<List<IdentifableMovieDto>>() {
         }.getType();
         return mapper.map(movies, listType);
     }
 
     @Override
-    public List<String> getMoviesUriLinks(int offset, int limit) {
-        List<Movie> movies = movieRepo.getMovies(offset, limit);
+    public List<String> getMoviesUriLinks(int offset, int limit, String title) {
+        logger.info("get movies as uri list");
+        List<Movie> movies = movieRepo.getMovies(offset, limit, title);
         return movies.stream().map(
                 Movie::getUrl
         ).collect(Collectors.toList());
@@ -81,5 +74,23 @@ public class MovieService implements IMovieService {
     @Override
     public void updateMovie(String movieId, MovieDto updatedMovie) {
 
+    }
+
+
+    private Movie getMovie(UUID movieId) {
+        Movie movie = movieRepo.getById(movieId);
+        if (movie != null) {
+            return movie;
+        } else {
+            throw new NotFoundException(movieId.toString());
+        }
+    }
+
+    private UUID parseId(String id) {
+        try {
+            return UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidIdException(id);
+        }
     }
 }
