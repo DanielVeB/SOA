@@ -1,10 +1,10 @@
 package app.controller.api;
 
 import app.util.Avatar;
+import app.util.PATCH;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.jaxrs.PATCH;
 import logic.dto.UserDto;
 import logic.dto.get.IdentifableUserDto;
 import logic.exception.InvalidIdException;
@@ -80,7 +80,7 @@ public interface IUserApi {
 
             }
     )
-    Response patchUser(@PathParam("userId") String userId, Map<String, Object> updates);
+    Response patchUser(@PathParam("userId") String userId, Map<String, String> updates);
 
     @DELETE
     @Path("/{userId}")

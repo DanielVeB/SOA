@@ -70,12 +70,17 @@ public class UsersService implements IUserService {
     }
 
     @Override
-    public IdentifableUserDto patchUser(String userId, Map<String, Object> updates) {
+    public IdentifableUserDto patchUser(String userId, Map<String, String> updates) {
         User user = getUser(parseId(userId));
-        System.out.println(user);
-        return null;
+        if (updates.containsKey("name")) {
+            user.setName(updates.get("name"));
+        }
+        if (updates.containsKey("age")) {
+            user.setAge(parseAge(updates.get("age")));
+        }
+        User updatedUser = userRepo.update(user);
+        return mapper.map(updatedUser, IdentifableUserDto.class);
     }
-
 
     public List<IdentifableUserDto> getUsers(int offset, int limit) {
         List<User> users = userRepo.getUsers(offset, limit);
@@ -83,7 +88,6 @@ public class UsersService implements IUserService {
         }.getType();
         return mapper.map(users, listType);
     }
-
 
     @Override
     public byte[] getUserAvatar(String userId) {
@@ -106,6 +110,14 @@ public class UsersService implements IUserService {
         userRepo.update(user);
     }
 
+    private int parseAge(String stringAge) {
+        try {
+            return Integer.parseInt(stringAge);
+        } catch (NumberFormatException ex) {
+            throw new WebException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    "BAD_REQUEST", "Invalid age format");
+        }
+    }
 
     private User getUser(UUID userId) {
         User user = userRepo.getById(userId);

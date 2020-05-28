@@ -16,7 +16,7 @@ public interface IUserService {
 
     IdentifableUserDto updateUser(String userId ,UserDto userDto);
 
-    IdentifableUserDto patchUser(String userId, Map<String, Object> updates);
+    IdentifableUserDto patchUser(String userId, Map<String, String> updates);
 
     List<IdentifableUserDto> getUsers(int offset, int limit);
 

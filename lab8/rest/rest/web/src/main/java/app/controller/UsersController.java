@@ -40,12 +40,12 @@ public class UsersController implements IUserApi {
         return Response.status(Response.Status.CREATED).entity(createdUser).build();
     }
 
-
     @Override
     public Response getUserById(String userId) {
         logger.info("Get user by id {}", userId);
         UserDto userDto = usersService.getUser(userId);
         return Response.ok(userDto).build();
+
     }
 
 
@@ -57,7 +57,7 @@ public class UsersController implements IUserApi {
     }
 
     @Override
-    public Response patchUser(String userId, Map<String, Object> updates) {
+    public Response patchUser(String userId, Map<String, String> updates) {
         logger.info("Patch user with id {}", userId);
         IdentifableUserDto updated = usersService.patchUser(userId, updates);
         return Response.ok(updated).build();
