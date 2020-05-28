@@ -4,6 +4,7 @@ import app.util.Avatar;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.jaxrs.PATCH;
 import logic.dto.UserDto;
 import logic.dto.get.IdentifableUserDto;
 import logic.exception.InvalidIdException;
@@ -13,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.Map;
 
 @Path("/users")
 @Api(value = "/users", tags = {"users"})
@@ -65,6 +67,20 @@ public interface IUserApi {
             }
     )
     Response updateUser(@PathParam("userId") String userId, UserDto userDto);
+
+    @PATCH
+    @Path("/{userId}")
+    @Consumes({"application/json"})
+    @Produces({"application/json"})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "patch user", response = IdentifableUserDto.class),
+                    @ApiResponse(code = 404, message = "user not found", response = NotFoundException.class),
+                    @ApiResponse(code = 400, message = "invalid id ", response = InvalidIdException.class)
+
+            }
+    )
+    Response patchUser(@PathParam("userId") String userId, Map<String, Object> updates);
 
     @DELETE
     @Path("/{userId}")

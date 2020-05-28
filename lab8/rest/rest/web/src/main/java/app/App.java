@@ -2,6 +2,7 @@ package app;
 
 import app.controller.MovieController;
 import app.controller.RedirectController;
+import app.controller.UserMoviesController;
 import app.controller.UsersController;
 import io.swagger.jaxrs.config.BeanConfig;
 import logic.config.exception.WebExceptionMapper;
@@ -31,6 +32,7 @@ public class App extends Application {
         resources.add(UsersController.class);
         resources.add(RedirectController.class);
         resources.add(MovieController.class);
+        resources.add(UserMoviesController.class);
 
         resources.add(WebExceptionMapper.class);
 

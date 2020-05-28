@@ -18,6 +18,7 @@ import javax.transaction.RollbackException;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class UsersService implements IUserService {
@@ -46,12 +47,8 @@ public class UsersService implements IUserService {
     public IdentifableUserDto getUser(String userId) {
         logger.info("Get user by id: {}", userId);
         UUID id = parseId(userId);
-        User user = userRepo.getById(id);
-        if (user != null) {
-            return mapper.map(user, IdentifableUserDto.class);
-        } else {
-            throw new NotFoundException(userId);
-        }
+        User user = getUser(id);
+        return mapper.map(user, IdentifableUserDto.class);
     }
 
     @Override
@@ -65,9 +62,20 @@ public class UsersService implements IUserService {
     }
 
     @Override
-    public IdentifableUserDto updateUser(UserDto userDto) {
+    public IdentifableUserDto updateUser(String userId, UserDto userDto) {
+        User user = getUser(parseId(userId));
+        User newUser = mapper.map(userDto, User.class);
+        newUser.setId(user.getId());
+        return mapper.map(userRepo.update(newUser), IdentifableUserDto.class);
+    }
+
+    @Override
+    public IdentifableUserDto patchUser(String userId, Map<String, Object> updates) {
+        User user = getUser(parseId(userId));
+        System.out.println(user);
         return null;
     }
+
 
     public List<IdentifableUserDto> getUsers(int offset, int limit) {
         List<User> users = userRepo.getUsers(offset, limit);
@@ -79,34 +87,32 @@ public class UsersService implements IUserService {
 
     @Override
     public byte[] getUserAvatar(String userId) {
-        User user = userRepo.getById(parseId(userId));
-        if (user != null) {
-            return user.getAvatar();
-        } else {
-            throw new NotFoundException(userId);
-        }
+        User user = getUser(parseId(userId));
+        return user.getAvatar();
     }
 
     @Override
     public void updateUserAvatar(String userId, byte[] avatar) {
 
-        User user = userRepo.getById(parseId(userId));
-        if (user != null) {
-            user.setAvatar(avatar);
-            userRepo.update(user);
-        } else {
-            throw new NotFoundException(userId);
-        }
+        User user = getUser(parseId(userId));
+        user.setAvatar(avatar);
+        userRepo.update(user);
     }
 
     @Override
     public void removeUserAvatar(String userId) {
-        User user = userRepo.getById(parseId(userId));
+        User user = getUser(parseId(userId));
+        user.setAvatar(null);
+        userRepo.update(user);
+    }
+
+
+    private User getUser(UUID userId) {
+        User user = userRepo.getById(userId);
         if (user != null) {
-            user.setAvatar(null);
-            userRepo.update(user);
+            return user;
         } else {
-            throw new NotFoundException(userId);
+            throw new NotFoundException(userId.toString());
         }
     }
 

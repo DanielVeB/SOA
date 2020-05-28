@@ -1,13 +1,9 @@
 package app.controller;
 
 import app.controller.api.IUserApi;
-import app.controller.api.IUserMoviesApi;
 import app.util.Avatar;
-import logic.dto.MovieDto;
 import logic.dto.UserDto;
-import logic.dto.get.IdentifableMovieDto;
 import logic.dto.get.IdentifableUserDto;
-import logic.service.IUserMoviesService;
 import logic.service.IUserService;
 import org.slf4j.Logger;
 
@@ -17,16 +13,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
-public class UsersController implements IUserApi, IUserMoviesApi {
+public class UsersController implements IUserApi {
 
 
     @Inject
     private IUserService usersService;
-
-    @Inject
-    private IUserMoviesService userMoviesService;
 
     @Inject
     private Logger logger;
@@ -58,7 +52,15 @@ public class UsersController implements IUserApi, IUserMoviesApi {
     @Override
     public Response updateUser(String userId, UserDto userDto) {
         logger.info("Update user with id {}", userId);
-        return Response.ok(userDto).build();
+        IdentifableUserDto updated = usersService.updateUser(userId, userDto);
+        return Response.ok(updated).build();
+    }
+
+    @Override
+    public Response patchUser(String userId, Map<String, Object> updates) {
+        logger.info("Patch user with id {}", userId);
+        IdentifableUserDto updated = usersService.patchUser(userId, updates);
+        return Response.ok(updated).build();
     }
 
 
@@ -91,31 +93,8 @@ public class UsersController implements IUserApi, IUserMoviesApi {
     @Override
     public Response removeUserAvatar(String userId) {
         logger.info("Remove avatar for user with id {}", userId);
+        usersService.removeUserAvatar(userId);
         return Response.status(Response.Status.NO_CONTENT).build();
-    }
-//===========================================
-
-    @Override
-    public Response getUserMovies(String userId) {
-        logger.info("Get movies for user with id {}", userId);
-        List<IdentifableMovieDto> movies = userMoviesService.getUserMovies(userId);
-        return Response.ok(movies).build();
-    }
-
-
-    @Override
-    public Response addMovieToUserCollection(String userId, String movieId) {
-        logger.info("Add movie(id : {} for user with id {}", movieId, userId);
-        MovieDto movie = userMoviesService.addMovieToUserCollection(userId, movieId);
-        return Response.status(Response.Status.CREATED).entity(movie).build();
-    }
-
-
-    @Override
-    public Response removeMovieFromUserCollection(String userId, String movieId) {
-        logger.info("Remove movie with id {} for user with id {}", movieId, userId);
-        MovieDto movieDto = userMoviesService.removeMovieFromUserCollection(userId, movieId);
-        return Response.ok(movieDto).build();
     }
 
     private File prepareFile(byte[] data) throws IOException {
